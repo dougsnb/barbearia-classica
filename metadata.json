@@ -1,6 +1,0 @@
-{
-  "name": "Barbearia Clássica — Sistema de Agendamento",
-  "description": "Sistema full-stack de agendamento para barbearia com Node.js, Express, MySQL 8+, autenticação JWT e lembretes automáticos por e-mail.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
