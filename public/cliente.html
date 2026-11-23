@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal do Cliente — Barbearia Clássica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="/" class="brand-mark">Barbearia Clássica</a>
+      <nav class="topnav" aria-label="Portal do cliente">
+        <a href="#novo-agendamento">Novo Agendamento</a>
+        <a href="#meus-agendamentos">Meus Agendamentos</a>
+        <a href="/">Vitrine</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="user-greeting">Olá, <strong id="user-name-display">Cliente</strong></span>
+        <a id="link-admin" href="/admin.html" class="btn btn-secondary btn-sm" style="display: none;">Painel Admin</a>
+        <button type="button" id="btn-sair" class="btn btn-ghost btn-sm">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container stack-lg">
+      <!-- BLOCO 1: NOVO AGENDAMENTO -->
+      <section id="novo-agendamento" class="card stack-md" aria-label="Novo agendamento">
+        <div class="card-header">
+          <div>
+            <span class="kicker">Reserva Online</span>
+            <h1 class="section-title">Novo Agendamento</h1>
+          </div>
+          <span class="muted-text">Escolha serviço, barbeiro, data e horário</span>
+        </div>
+
+        <div id="agendamento-alert" class="alert-banner" role="alert"></div>
+
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label" for="select-servico">1. Serviço</label>
+            <select id="select-servico" class="select">
+              <option value="">Carregando serviços...</option>
+            </select>
+            <span id="servico-resumo" class="muted-text" style="font-size: 0.85rem;"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="select-barbeiro">2. Barbeiro</label>
+            <select id="select-barbeiro" class="select">
+              <option value="sem_preferencia">Sem preferência (Primeiro disponível)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="input-data">3. Data desejada</label>
+            <input type="date" id="input-data" class="input" />
+          </div>
+        </div>
+
+        <div class="stack-sm">
+          <div class="row-between">
+            <span class="form-label">4. Horários disponíveis</span>
+            <span id="slots-status" class="muted-text" style="font-size: 0.85rem;"></span>
+          </div>
+          <div id="slots-container" class="slots-grid">
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <p>Selecione serviço, barbeiro e data para visualizar os horários livres.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="agendamento-resumo" class="card" style="background-color: var(--surface-input); display: none;">
+          <div class="row-between">
+            <div class="stack-sm" style="gap: 0.25rem;">
+              <strong style="color: var(--gold);">Resumo da Reserva</strong>
+              <span id="resumo-detalhe" class="muted-text"></span>
+            </div>
+            <button type="button" id="btn-confirmar-agendamento" class="btn btn-primary">
+              Confirmar Agendamento
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- BLOCO 2: MEUS AGENDAMENTOS -->
+      <section id="meus-agendamentos" class="stack-md" aria-label="Meus agendamentos">
+        <div class="row-between">
+          <div>
+            <span class="kicker">Sua Agenda</span>
+            <h2 class="section-title">Meus Agendamentos</h2>
+          </div>
+          <button type="button" id="btn-atualizar-meus" class="btn btn-secondary btn-sm">Atualizar</button>
+        </div>
+
+        <div id="meus-alert" class="alert-banner" role="alert"></div>
+
+        <div class="card stack-md">
+          <div class="card-header">
+            <h3 class="card-title">Próximos Atendimentos</h3>
+            <span id="proximos-count" class="muted-text"></span>
+          </div>
+          <div id="proximos-list" class="stack-md">
+            <div class="skeleton-box"></div>
+          </div>
+        </div>
+
+        <div class="card stack-md">
+          <div class="card-header">
+            <h3 class="card-title">Histórico</h3>
+            <span id="historico-count" class="muted-text"></span>
+          </div>
+          <div id="historico-list" class="stack-md">
+            <div class="skeleton-box"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- MODAL REMARCAR AGENDAMENTO -->
+  <div id="modal-remarcar" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-remarcar-titulo">
+      <div class="modal-header">
+        <h3 id="modal-remarcar-titulo" class="card-title">Remarcar Agendamento</h3>
+        <button type="button" id="btn-remarcar-fechar" class="toast-close" aria-label="Fechar">×</button>
+      </div>
+
+      <div class="stack-md">
+        <p id="remarcar-info" class="muted-text"></p>
+        <div id="remarcar-alert" class="alert-banner" role="alert"></div>
+
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="remarcar-barbeiro">Barbeiro</label>
+            <select id="remarcar-barbeiro" class="select"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="remarcar-data">Nova Data</label>
+            <input type="date" id="remarcar-data" class="input" />
+          </div>
+        </div>
+
+        <div class="stack-sm">
+          <span class="form-label">Selecione o novo horário</span>
+          <div id="remarcar-slots" class="slots-grid"></div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn-remarcar-cancelar" class="btn btn-ghost">Voltar</button>
+        <button type="button" id="btn-remarcar-confirmar" class="btn btn-primary" disabled>
+          Confirmar Remarcação
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">Barbearia Clássica — Portal do Cliente</div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/cliente.js"></script>
+</body>
+</html>

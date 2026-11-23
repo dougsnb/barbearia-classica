@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barbearia Clássica — Agendamento Online</title>
+  <meta name="description" content="Agende seu corte masculino, barba ou combo online na Barbearia Clássica com escolha de barbeiro e confirmação imediata." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="/" class="brand-mark">Barbearia Clássica</a>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a href="#servicos">Serviços</a>
+        <a href="#barbeiros">Barbeiros</a>
+        <a href="#como-funciona">Como funciona</a>
+      </nav>
+      <div class="topbar-actions">
+        <a id="header-cta" href="/login.html" class="btn btn-primary btn-sm">Entrar / Agendar</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="stack-md">
+          <span class="kicker">Tradição &amp; Precisão</span>
+          <h1 class="display-title">Corte clássico, navalha precisa e horário marcado sem espera.</h1>
+          <p class="muted-text">
+            Escolha o serviço, selecione seu barbeiro de confiança — ou o primeiro profissional disponível — e reserve seu horário em poucos cliques com lembrete automático por e-mail.
+          </p>
+          <div class="row-wrap">
+            <a id="hero-cta" href="/login.html" class="btn btn-primary">Agendar Horário</a>
+            <a href="#servicos" class="btn btn-secondary">Ver Serviços</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Informações de funcionamento">
+          <h2 class="card-title" style="margin-bottom: 1rem;">Funcionamento</h2>
+          <ul class="info-list">
+            <li>
+              <span class="muted-text">Segunda a Sábado</span>
+              <span class="tabular">09:00 – 12:00</span>
+            </li>
+            <li>
+              <span class="muted-text">Turno da Tarde</span>
+              <span class="tabular">13:30 – 19:00</span>
+            </li>
+            <li>
+              <span class="muted-text">Domingo</span>
+              <span>Fechado</span>
+            </li>
+            <li>
+              <span class="muted-text">Antecedência de alteração</span>
+              <span class="tabular">Mín. 2 horas</span>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section id="servicos" class="main-content" style="padding-bottom: 1.5rem;">
+      <div class="container stack-md">
+        <div class="row-between">
+          <div>
+            <span class="kicker">Catálogo</span>
+            <h2 class="section-title">Nossos Serviços</h2>
+          </div>
+          <span id="servicos-count" class="muted-text"></span>
+        </div>
+
+        <div id="servicos-alert" class="alert-banner error" role="alert"></div>
+
+        <div id="servicos-grid" class="grid-2">
+          <div class="skeleton-box"></div>
+          <div class="skeleton-box"></div>
+          <div class="skeleton-box"></div>
+          <div class="skeleton-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="barbeiros" style="padding-block: 2.5rem;">
+      <div class="container stack-md">
+        <div>
+          <span class="kicker">Equipe</span>
+          <h2 class="section-title">Barbeiros Disponíveis</h2>
+        </div>
+
+        <div id="barbeiros-grid" class="grid-2">
+          <div class="skeleton-box"></div>
+          <div class="skeleton-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="como-funciona" style="padding-block: 1.5rem 4rem;">
+      <div class="container">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <span class="kicker">Agendamento Direto</span>
+              <h2 class="section-title">Como funciona sua reserva</h2>
+            </div>
+          </div>
+          <div class="grid-3">
+            <div class="stack-sm">
+              <strong style="color: var(--gold);">01. Escolha o serviço</strong>
+              <p class="muted-text">Selecione corte, barba, sobrancelha ou combo com duração e valor transparentes.</p>
+            </div>
+            <div class="stack-sm">
+              <strong style="color: var(--gold);">02. Defina barbeiro e horário</strong>
+              <p class="muted-text">Consulte a agenda real em intervalos de 15 minutos ou opte pelo primeiro profissional livre.</p>
+            </div>
+            <div class="stack-sm">
+              <strong style="color: var(--gold);">03. Receba seu lembrete</strong>
+              <p class="muted-text">Acompanhe, remarque ou cancele pelo portal do cliente e receba lembrete 2h antes por e-mail.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      Barbearia Clássica — Sistema de Agendamento Online
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script>
+    (function () {
+      const api = window.BarbeariaAPI;
+      const usuario = api.getUsuario();
+      const token = api.getToken();
+
+      const headerCta = document.getElementById('header-cta');
+      const heroCta = document.getElementById('hero-cta');
+
+      const destinoLogado = usuario && usuario.perfil === 'ADMIN' ? '/admin.html' : '/cliente.html';
+
+      if (token && usuario) {
+        headerCta.textContent = usuario.perfil === 'ADMIN' ? 'Painel Admin' : 'Meus Agendamentos';
+        headerCta.href = destinoLogado;
+        heroCta.href = destinoLogado;
+      }
+
+      function linkAgendarServico(idServico) {
+        if (token && usuario) {
+          return `/cliente.html?servico=${encodeURIComponent(idServico)}`;
+        }
+        return `/login.html?servico=${encodeURIComponent(idServico)}`;
+      }
+
+      async function carregarCatalogo() {
+        const servicosGrid = document.getElementById('servicos-grid');
+        const servicosAlert = document.getElementById('servicos-alert');
+        const servicosCount = document.getElementById('servicos-count');
+        const barbeirosGrid = document.getElementById('barbeiros-grid');
+
+        servicosAlert.classList.remove('visible');
+
+        try {
+          const [resServicos, resBarbeiros] = await Promise.all([
+            api.request('/api/servicos'),
+            api.request('/api/barbeiros'),
+          ]);
+
+          const servicos = resServicos.servicos || [];
+          const barbeiros = resBarbeiros.barbeiros || [];
+
+          servicosCount.textContent = `${servicos.length} serviço(s) ativo(s)`;
+
+          if (servicos.length === 0) {
+            servicosGrid.innerHTML = `
+              <div class="empty-state" style="grid-column: 1 / -1;">
+                <p>Nenhum serviço ativo cadastrado no momento.</p>
+              </div>
+            `;
+          } else {
+            servicosGrid.innerHTML = servicos
+              .map(
+                (s) => `
+                  <article class="card service-card">
+                    <div class="stack-sm">
+                      <div class="row-between">
+                        <h3 class="card-title">${api.escaparHtml(s.nome)}</h3>
+                        <span class="service-price">${api.formatarMoeda(s.preco)}</span>
+                      </div>
+                      <p class="muted-text">${api.escaparHtml(s.descricao || 'Atendimento especializado com acabamento tradicional.')}</p>
+                    </div>
+                    <div class="row-between" style="padding-top: 0.75rem; border-top: 1px solid var(--border);">
+                      <span class="service-meta tabular">${Number(s.duracao_min)} min</span>
+                      <a href="${linkAgendarServico(s.id_servico)}" class="btn btn-secondary btn-sm">Agendar serviço</a>
+                    </div>
+                  </article>
+                `
+              )
+              .join('');
+          }
+
+          if (barbeiros.length === 0) {
+            barbeirosGrid.innerHTML = `
+              <div class="empty-state" style="grid-column: 1 / -1;">
+                <p>Nenhum barbeiro ativo disponível no momento.</p>
+              </div>
+            `;
+          } else {
+            barbeirosGrid.innerHTML = barbeiros
+              .map((b) => {
+                const diasUnicos = Array.from(
+                  new Set((b.horarios || []).map((h) => api.nomeDiaSemana(h.dia_semana)))
+                );
+                const resumoDias =
+                  diasUnicos.length > 0 ? diasUnicos.join(' · ') : 'Horários sob consulta';
+                return `
+                  <article class="card stack-sm">
+                    <div class="row-between">
+                      <h3 class="card-title">${api.escaparHtml(b.nome)}</h3>
+                      <span class="status-badge status-ativo">Ativo</span>
+                    </div>
+                    <p class="muted-text">${api.escaparHtml(resumoDias)}</p>
+                  </article>
+                `;
+              })
+              .join('');
+          }
+        } catch (err) {
+          servicosAlert.textContent = `Não foi possível carregar o catálogo: ${err.message}`;
+          servicosAlert.classList.add('visible');
+          servicosGrid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <p>Verifique a conexão com o banco de dados MySQL e tente novamente.</p>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-retry-catalogo">Tentar novamente</button>
+            </div>
+          `;
+          barbeirosGrid.innerHTML = '';
+          const retryBtn = document.getElementById('btn-retry-catalogo');
+          if (retryBtn) retryBtn.addEventListener('click', carregarCatalogo);
+        }
+      }
+
+      carregarCatalogo();
+    })();
+  </script>
+</body>
+</html>

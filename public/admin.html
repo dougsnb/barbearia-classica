@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Administrativo — Barbearia Clássica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="/" class="brand-mark">Barbearia Clássica</a>
+      <nav class="topnav" aria-label="Navegação administrativa">
+        <a href="/cliente.html">Portal Cliente</a>
+        <a href="/">Vitrine</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="user-greeting">Admin: <strong id="admin-name-display">Administrador</strong></span>
+        <button type="button" id="btn-sair" class="btn btn-ghost btn-sm">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container stack-lg">
+      <div class="row-between">
+        <div>
+          <span class="kicker">Gestão Operacional</span>
+          <h1 class="section-title">Painel Administrativo</h1>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Seções administrativas">
+          <button type="button" class="tab-btn active" id="tab-agenda" data-tab="panel-agenda" role="tab" aria-selected="true">
+            Relatórios e Agenda
+          </button>
+          <button type="button" class="tab-btn" id="tab-barbeiros" data-tab="panel-barbeiros" role="tab" aria-selected="false">
+            Barbeiros e Horários
+          </button>
+          <button type="button" class="tab-btn" id="tab-servicos" data-tab="panel-servicos" role="tab" aria-selected="false">
+            Serviços
+          </button>
+        </div>
+      </div>
+
+      <!-- ABA 1: RELATÓRIOS E AGENDA (UC09, UC13) -->
+      <section id="panel-agenda" class="tab-panel active stack-md" role="tabpanel">
+        <div class="card stack-md">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Filtros de Agenda e Relatório</h2>
+              <p class="muted-text">Consulte atendimentos por período, barbeiro ou status e dispare lembretes.</p>
+            </div>
+            <button type="button" id="btn-disparar-lembretes" class="btn btn-secondary btn-sm">
+              Disparar Lembretes Agora
+            </button>
+          </div>
+
+          <div class="form-grid form-grid-4">
+            <div class="form-group">
+              <label class="form-label" for="filtro-data-inicio">Data inicial</label>
+              <input type="date" id="filtro-data-inicio" class="input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="filtro-data-fim">Data final</label>
+              <input type="date" id="filtro-data-fim" class="input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="filtro-barbeiro">Barbeiro</label>
+              <select id="filtro-barbeiro" class="select">
+                <option value="">Todos os barbeiros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="filtro-status">Status</label>
+              <select id="filtro-status" class="select">
+                <option value="">Todos os status</option>
+                <option value="AGENDADO">AGENDADO</option>
+                <option value="CONCLUIDO">CONCLUIDO</option>
+                <option value="CANCELADO">CANCELADO</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row-wrap">
+            <button type="button" id="btn-filtrar-agenda" class="btn btn-primary btn-sm">Aplicar Filtros</button>
+            <button type="button" id="btn-limpar-agenda" class="btn btn-ghost btn-sm">Limpar Filtros</button>
+          </div>
+        </div>
+
+        <div class="grid-4">
+          <div class="stat-card">
+            <div class="stat-label">Total</div>
+            <div id="stat-total" class="stat-value">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Agendados</div>
+            <div id="stat-agendados" class="stat-value gold">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Concluídos</div>
+            <div id="stat-concluidos" class="stat-value">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Cancelados</div>
+            <div id="stat-cancelados" class="stat-value">0</div>
+          </div>
+        </div>
+
+        <div id="agenda-alert" class="alert-banner" role="alert"></div>
+
+        <div class="card" style="padding: 0;">
+          <div class="table-wrapper" style="border: none;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Data / Hora</th>
+                  <th>Cliente</th>
+                  <th>Serviço</th>
+                  <th>Barbeiro</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="agenda-tbody">
+                <tr>
+                  <td colspan="7" class="muted-text">Carregando agendamentos...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 2: BARBEIROS E HORÁRIOS (UC10, UC11, RN08) -->
+      <section id="panel-barbeiros" class="tab-panel stack-md" role="tabpanel">
+        <div class="card stack-md">
+          <div class="card-header">
+            <h2 id="barbeiro-form-title" class="card-title">Cadastrar Barbeiro</h2>
+          </div>
+
+          <div id="barbeiros-alert" class="alert-banner" role="alert"></div>
+
+          <form id="form-barbeiro" class="form-grid form-grid-3" novalidate>
+            <input type="hidden" id="barbeiro-id" />
+            <div class="form-group">
+              <label class="form-label" for="barbeiro-nome">Nome do barbeiro</label>
+              <input type="text" id="barbeiro-nome" class="input" placeholder="Ex.: Marcos Oliveira" required maxlength="100" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="barbeiro-telefone">Telefone</label>
+              <input type="tel" id="barbeiro-telefone" class="input" placeholder="(11) 99999-9999" maxlength="20" />
+            </div>
+            <div class="form-group" style="justify-content: flex-end;">
+              <label class="checkbox-row">
+                <input type="checkbox" id="barbeiro-ativo" checked />
+                <span>Barbeiro ativo</span>
+              </label>
+            </div>
+            <div class="row-wrap" style="grid-column: 1 / -1;">
+              <button type="submit" id="btn-salvar-barbeiro" class="btn btn-primary btn-sm">Salvar Barbeiro</button>
+              <button type="button" id="btn-cancelar-edicao-barbeiro" class="btn btn-ghost btn-sm" style="display: none;">
+                Cancelar Edição
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card" style="padding: 0;">
+          <div class="table-wrapper" style="border: none;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Telefone</th>
+                  <th>Status</th>
+                  <th>Turnos Cadastrados</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="barbeiros-tbody">
+                <tr>
+                  <td colspan="5" class="muted-text">Carregando barbeiros...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 3: SERVIÇOS (UC12, RN08) -->
+      <section id="panel-servicos" class="tab-panel stack-md" role="tabpanel">
+        <div class="card stack-md">
+          <div class="card-header">
+            <h2 id="servico-form-title" class="card-title">Cadastrar Serviço</h2>
+          </div>
+
+          <div id="servicos-admin-alert" class="alert-banner" role="alert"></div>
+
+          <form id="form-servico" class="form-grid form-grid-2" novalidate>
+            <input type="hidden" id="servico-id" />
+            <div class="form-group">
+              <label class="form-label" for="servico-nome">Nome do serviço</label>
+              <input type="text" id="servico-nome" class="input" placeholder="Ex.: Corte Degradê" required maxlength="80" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="servico-preco">Preço (R$)</label>
+              <input type="number" id="servico-preco" class="input tabular" step="0.01" min="0.01" placeholder="45.00" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="servico-duracao">Duração (minutos)</label>
+              <input type="number" id="servico-duracao" class="input tabular" step="5" min="5" placeholder="30" required />
+            </div>
+            <div class="form-group" style="justify-content: flex-end;">
+              <label class="checkbox-row">
+                <input type="checkbox" id="servico-ativo" checked />
+                <span>Serviço ativo</span>
+              </label>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label" for="servico-descricao">Descrição</label>
+              <textarea id="servico-descricao" class="textarea" maxlength="255" placeholder="Detalhes do atendimento..."></textarea>
+            </div>
+            <div class="row-wrap" style="grid-column: 1 / -1;">
+              <button type="submit" id="btn-salvar-servico" class="btn btn-primary btn-sm">Salvar Serviço</button>
+              <button type="button" id="btn-cancelar-edicao-servico" class="btn btn-ghost btn-sm" style="display: none;">
+                Cancelar Edição
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card" style="padding: 0;">
+          <div class="table-wrapper" style="border: none;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Serviço</th>
+                  <th>Descrição</th>
+                  <th>Duração</th>
+                  <th>Preço</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="servicos-admin-tbody">
+                <tr>
+                  <td colspan="6" class="muted-text">Carregando serviços...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- MODAL HORÁRIOS DE TRABALHO (UC11) -->
+  <div id="modal-horarios" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-horarios-titulo">
+      <div class="modal-header">
+        <div>
+          <h3 id="modal-horarios-titulo" class="card-title">Horários de Trabalho</h3>
+          <span id="horarios-barbeiro-nome" class="muted-text"></span>
+        </div>
+        <button type="button" id="btn-fechar-horarios" class="toast-close" aria-label="Fechar">×</button>
+      </div>
+
+      <div class="stack-md">
+        <div id="horarios-alert" class="alert-banner" role="alert"></div>
+
+        <form id="form-horario" class="form-grid form-grid-3" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="horario-dia">Dia da semana</label>
+            <select id="horario-dia" class="select">
+              <option value="0">0 — Domingo</option>
+              <option value="1" selected>1 — Segunda-feira</option>
+              <option value="2">2 — Terça-feira</option>
+              <option value="3">3 — Quarta-feira</option>
+              <option value="4">4 — Quinta-feira</option>
+              <option value="5">5 — Sexta-feira</option>
+              <option value="6">6 — Sábado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="horario-inicio">Início</label>
+            <input type="time" id="horario-inicio" class="input tabular" value="09:00" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="horario-fim">Fim</label>
+            <input type="time" id="horario-fim" class="input tabular" value="12:00" required />
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <button type="submit" id="btn-add-horario" class="btn btn-primary btn-sm">Adicionar Turno</button>
+          </div>
+        </form>
+
+        <div id="horarios-lista" class="stack-sm"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn-concluir-horarios" class="btn btn-secondary">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">Barbearia Clássica — Painel Administrativo</div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

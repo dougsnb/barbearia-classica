@@ -1,0 +1,6 @@
+{
+  "summary": "Plano arquitetural e de execução em etapas para o Sistema de Agendamento de Barbearia (Node.js CommonJS, Express, MySQL 8+, JWT, node-cron/Nodemailer e interface clássica escura em grafite e dourado), detalhando a entrega imediata da Etapa 1 e a evolução para Back-end e Front-end.",
+  "updatedAt": "2026-11-18T01:23:12.076480932Z",
+  "requestFeedback": true,
+  "userFacing": true
+}
